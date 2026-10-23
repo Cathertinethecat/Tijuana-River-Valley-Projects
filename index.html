@@ -9,7 +9,8 @@
 <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.1/dist/Leaflet.GoogleMutant.js"></script>
 <script>window.gmReady=function(){window._gmLoaded=true;if(window.onGoogleReady)window.onGoogleReady();};</script>
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv-3fjCEu5UzXlyiA2OGjzyUl3tprLpxY&loading=async&callback=gmReady&v=weekly"></script>
-<script src="data.js?v=2"></script>
+<script src="data.js?v=3"></script>
+<script src="projects.js?v=3"></script>
 <style>
   html,body{height:100%;margin:0;font-family:"Times New Roman",Times,serif;color:#1d1c19;background:#111}
   #map{position:absolute;inset:0}
@@ -44,6 +45,10 @@
   .tp a{color:#1f4e79}
   .note{font-size:.78rem;color:#5f5b50;margin:6px 0 0}
   .mk{width:20px;height:20px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .pm{width:18px;height:18px;border-radius:3px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.6);color:#fff;font:700 10px "Times New Roman",Times,serif;display:flex;align-items:center;justify-content:center}
+  .pm.s{background:#6a3fb5}.pm.t1{background:#e07b00}.pm.t2{background:#fff;color:#e07b00;border-color:#e07b00}
+  .pl{font-size:.8rem!important;padding:1px 0!important}.pl i{color:#5f5b50}
+  .sub{font-size:.8rem;font-weight:700;margin:4px 0 0;color:#1f4e79}
   .lm{background:rgba(31,78,121,.9);color:#fff;border-radius:3px;padding:2px 6px;font:italic 11px "Times New Roman",Times,serif;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.5)}
   .bib{margin:4px 0 0;padding:0 0 0 1.6em;font-size:.74rem;color:#5f5b50;line-height:1.35}
   .bib li{margin:0 0 4px}.bib a{color:#1f4e79;word-break:break-all}
@@ -74,6 +79,7 @@
         <li>The focus area is the lower six miles of the Tijuana River and its estuary, the reach the Recovery Team works on (SDRWQCB, 2012b). About two-thirds of the watershed is in Mexico (EPA, 2025).</li>
         <li>The river and border lines are traced by hand over imagery and are approximate. Markers are placed by address or description, also approximate.</li>
         <li>Cards cite each source directly; figures are as those sources state them.</li>
+        <li>Project markers: purple squares are the 27 Recovery Strategy projects (S1 to S27, by Priority Action Area); orange squares are the 10 Five-Year Action Plan projects (P1 to P10; solid Tier 1, outlined Tier 2). Projects without one site are listed in the legend and open a card at the valley center. Strategy page numbers are printed pages; plan page numbers are PDF pages.</li>
       </ol>
       <b style="font-size:.85rem;display:block;margin-top:6px">Recovery Team timeline</b>
       <table class="tl" id="tl"></table>
@@ -149,6 +155,41 @@ GROUPS.forEach(g=>{const items=SITES.filter(s=>s.g===g[0]);
  if(g[0]==='focus'){box.innerHTML=`<label><span class="ln" style="border-color:#4fc3f7"></span>Lower Tijuana River (focus reach)</label><label><span class="ln d" style="border-color:#888"></span>U.S.-Mexico border</label>`;}
  items.forEach(s=>{const l=document.createElement('label');l.innerHTML=`<span class="sw" style="background:${g[2]}"></span>${s.n}`;l.onclick=e=>{e.preventDefault();if(!map.hasLayer(LG[g[0]]))LG[g[0]].addTo(map);map.setView([s.lat,s.lng],15);LG[g[0]].eachLayer(m=>{if(m.getLatLng&&m.getLatLng().lat===s.lat)m.openPopup();});};box.appendChild(l);});
  const cb=head.querySelector('input');cb.onchange=()=>{cb.checked?LG[g[0]].addTo(map):map.removeLayer(LG[g[0]]);};
+ head.querySelector('.secbtn').onclick=e=>{e.preventDefault();e.stopPropagation();box.classList.toggle('open');e.target.innerHTML=box.classList.contains('open')?'&#9662;':'&#9656;';};
+ secs.appendChild(head);secs.appendChild(box);});
+
+/* Recovery Team projects layer: 2012 strategy (purple squares, S#) and 2015 action plan (orange, P#; solid Tier 1, outlined Tier 2) */
+const PL={strat:L.layerGroup().addTo(map),plan:L.layerGroup().addTo(map)};
+const VALLEY=[32.5560,-117.0700];
+function plabel(x){return x.doc==='strat'?'S'+x.num:'P'+x.num;}
+function pcard(x){const id='c'+(tabSeq++);
+ const strat=x.doc==='strat';
+ const kv=strat?`<div><b>Area ${x.ar}</b><span>${AREAS[x.ar]}</span></div><div><b>${plabel(x)}</b><span>2012 Recovery Strategy project</span></div>`
+  :`<div><b>Tier ${x.tier}</b><span>2015 Five-Year Action Plan</span></div><div><b>${plabel(x)}</b><span>Plan project</span></div>`;
+ const k=strat?'strat':'plan';const pgs=strat?'p. '+x.pg:'pp. '+x.pg;
+ const ctxt=`(${SRC[k][0].replace(' (',', ').replace(')','')}, ${x.pg.includes('-')||x.pg.includes(',')?'pp.':'p.'} ${x.pg})`;
+ return `<h2><a href="${SRC[k][1]}" target="_blank" rel="noopener">${x.n}</a></h2><p class="addr">${x.where}${x.lat==null?'. Valley-wide or watershed-wide, so it has no single marker.':''}</p><div class="kv">${kv}</div>
+ <div class="tabs" data-c="${id}"><button class="on" data-t="0">Overview</button><button data-t="1">Recovery Team</button><button data-t="2">Sources</button></div>
+ <div class="tp on" data-c="${id}" data-t="0">${x.d}${x.cost?`<p style="margin:6px 0 0"><i>Funding:</i> ${x.cost}</p>`:''}</div>
+ <div class="tp" data-c="${id}" data-t="1"><i>Lead:</i> ${x.lead}.<br>${strat?`One of the 27 projects in the Recovery Strategy, under Priority Action Area ${x.ar}: ${AREAS[x.ar]}.`:`One of the 10 projects in the Five-Year Action Plan, ${x.tier===1?'Tier 1 (funding requested from the Cleanup and Abatement Account)':'Tier 2 (binational or longer-term, no cost given)'}.`}<br>Cite as ${ctxt}.</div>
+ <div class="tp" data-c="${id}" data-t="2"><ul class="apa"><li>${apa(k)} (${pgs})</li></ul></div>
+ <p class="note">${x.lat==null?'Shown at the valley center only so the card can open.':'Placed by the site named in the document, approximate.'}</p>`;}
+PROJECTS.forEach(x=>{
+ if(x.lat==null)return;
+ const cls=x.doc==='strat'?'s':(x.tier===1?'t1':'t2');
+ x._m=L.marker([x.lat,x.lng],{icon:L.divIcon({className:'',html:`<div class="pm ${cls}">${x.num}</div>`,iconSize:[18,18],iconAnchor:[9,9],popupAnchor:[0,-9]}),zIndexOffset:500}).addTo(PL[x.doc]).bindPopup(pcard(x),{maxWidth:320,autoPanPaddingTopLeft:[10,10],autoPanPaddingBottomRight:[10,60]});});
+function openProject(x){if(x._m){if(!map.hasLayer(PL[x.doc]))PL[x.doc].addTo(map);map.setView(x._m.getLatLng(),15);x._m.openPopup();}
+ else{L.popup({maxWidth:320}).setLatLng(VALLEY).setContent(pcard(x)).openOn(map);map.setView(VALLEY,13);}}
+[['strat','Recovery Strategy projects (2012, 27)','#6a3fb5'],['plan','Five-Year Action Plan projects (2015, 10)','#e07b00']].forEach(([d,title,col])=>{
+ const head=document.createElement('label');head.className='sechead';
+ head.innerHTML=`<button class="secbtn" type="button">&#9656;</button><input type="checkbox" checked> &nbsp;<span class="sw" style="background:${col};border-radius:2px"></span>${title}`;
+ const box=document.createElement('div');box.className='grp';
+ const items=PROJECTS.filter(x=>x.doc===d);
+ let groups=d==='strat'?Object.keys(AREAS).map(a=>['Area '+a+': '+AREAS[a],items.filter(x=>x.ar===a)]):[['Tier 1',items.filter(x=>x.tier===1)],['Tier 2',items.filter(x=>x.tier===2)]];
+ if(d==='strat')box.innerHTML='<div class="pl"><i>Area A has no numbered projects; its projects were left to binational partners and the team.</i></div>';
+ groups.forEach(([g,list])=>{if(!list.length)return;const h=document.createElement('div');h.className='sub';h.textContent=g;box.appendChild(h);
+  list.forEach(x=>{const l=document.createElement('label');l.className='pl';l.innerHTML=`${plabel(x)}. ${x.n}${x.lat==null?' <i>(valley-wide)</i>':''}`;l.onclick=e=>{e.preventDefault();openProject(x);};box.appendChild(l);});});
+ const cb=head.querySelector('input');cb.onchange=()=>{cb.checked?PL[d].addTo(map):map.removeLayer(PL[d]);};
  head.querySelector('.secbtn').onclick=e=>{e.preventDefault();e.stopPropagation();box.classList.toggle('open');e.target.innerHTML=box.classList.contains('open')?'&#9662;':'&#9656;';};
  secs.appendChild(head);secs.appendChild(box);});
 

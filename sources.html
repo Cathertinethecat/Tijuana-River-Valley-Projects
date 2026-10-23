@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TRVRT Map Sources</title>
-<script src="data.js?v=2"></script>
+<script src="data.js?v=3"></script>
+<script src="projects.js?v=3"></script>
 <style>
   body{font-family:"Times New Roman",Times,serif;color:#000;background:#fff;max-width:760px;margin:0 auto;padding:32px 16px 48px;font-size:12pt;line-height:2}
   h1{font-size:12pt;font-weight:700;text-align:center;margin:0}
@@ -29,7 +30,7 @@
 <script>
 const keys=Object.keys(SRC).sort((a,b)=>SRC[a][2].replace(/<[^>]+>/g,'').localeCompare(SRC[b][2].replace(/<[^>]+>/g,'')));
 document.getElementById('refs').innerHTML=keys.map(k=>`<p class="ref">${SRC[k][2]} <a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][1]}</a></p>`).join('');
-const rows=[...SITES.map(s=>[s.n,s.src]),['Lower Tijuana River focus reach',['res2012','page','tmdl','strat','plan','charter']],['U.S.-Mexico border',['epa','charter','m328','m333']],['Recovery Team timeline',[...new Set(TIMELINE.map(t=>t[2]))]]];
+const rows=[...SITES.map(s=>[s.n,s.src]),['Lower Tijuana River focus reach',['res2012','page','tmdl','strat','plan','charter']],['U.S.-Mexico border',['epa','charter','m328','m333']],['Recovery Team timeline',[...new Set(TIMELINE.map(t=>t[2]))]],['Recovery Strategy projects S1 to S27 (pages cited on each card)',['strat']],['Five-Year Action Plan projects P1 to P10 (pages cited on each card)',['plan']]];
 document.getElementById('use').innerHTML+=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].map(k=>SRC[k][0]).join('; ')}</td></tr>`).join('');
 </script>
 </body>
