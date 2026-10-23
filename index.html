@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.1/dist/Leaflet.GoogleMutant.js"></script>
 <script>window.gmReady=function(){window._gmLoaded=true;if(window.onGoogleReady)window.onGoogleReady();};</script>
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv-3fjCEu5UzXlyiA2OGjzyUl3tprLpxY&loading=async&callback=gmReady&v=weekly"></script>
-<script src="data.js?v=1"></script>
+<script src="data.js?v=2"></script>
 <style>
   html,body{height:100%;margin:0;font-family:"Times New Roman",Times,serif;color:#1d1c19;background:#111}
   #map{position:absolute;inset:0}
@@ -40,7 +40,7 @@
   .tabs button{font:inherit;font-size:.85rem;border:none;background:none;padding:4px 8px;cursor:pointer;color:#5f5b50;border-bottom:2px solid transparent;margin-bottom:-1px}
   .tabs button.on{color:#1f4e79;border-bottom-color:#1f4e79;font-weight:700}
   .tp{display:none;font-size:.92rem}.tp.on{display:block}
-  .tp ul{margin:0;padding-left:1.2em}.tp li{margin:0 0 4px}
+  .tp ul{margin:0;padding-left:1.2em}.tp li{margin:0 0 4px}.tp ul.apa{list-style:none;padding:0}.tp ul.apa li{padding-left:1.5em;text-indent:-1.5em;font-size:.82rem;line-height:1.35}.tp ul.apa a{word-break:break-all}
   .tp a{color:#1f4e79}
   .note{font-size:.78rem;color:#5f5b50;margin:6px 0 0}
   .mk{width:20px;height:20px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.6)}
@@ -68,7 +68,7 @@
     </div>
     <label style="margin-top:6px"><input type="checkbox" id="sat" checked> Satellite view</label>
     <div id="secs"></div>
-    <div class="btns"><button id="aboutTog">About the data</button></div>
+    <div class="btns"><button id="aboutTog">About the data</button><button onclick="window.open('sources.html','_blank')">Sources sheet</button></div>
     <div id="about" style="display:none">
       <ol class="bib">
         <li>The focus area is the lower six miles of the Tijuana River and its estuary, the reach the Recovery Team works on (SDRWQCB, 2012b). About two-thirds of the watershed is in Mexico (EPA, 2025).</li>
@@ -110,13 +110,14 @@ if(window._gmLoaded)window.onGoogleReady();
 /* layers */
 const LG={};GROUPS.forEach(g=>{LG[g[0]]=L.layerGroup().addTo(map);});
 const srcLink=k=>`<a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a>`;
+const apa=k=>`${SRC[k][2]} <a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][1]}</a>`;
 let tabSeq=0;
 function card(s){const id='c'+(tabSeq++);
  const kv=s.kv.map(x=>`<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
  const gm=`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`;
  return `<h2><a href="${s.url}" target="_blank" rel="noopener">${s.n}</a></h2><p class="addr">${s.a}<br><a href="${gm}" target="_blank" rel="noopener">Open in Google Maps</a></p><div class="kv">${kv}</div>
  <div class="tabs" data-c="${id}"><button class="on" data-t="0">Overview</button><button data-t="1">Recovery Team</button><button data-t="2">Sources</button></div>
- <div class="tp on" data-c="${id}" data-t="0">${s.ov}</div><div class="tp" data-c="${id}" data-t="1">${s.trt}</div><div class="tp" data-c="${id}" data-t="2"><ul>${s.src.map(k=>'<li>'+srcLink(k)+'</li>').join('')}</ul></div>
+ <div class="tp on" data-c="${id}" data-t="0">${s.ov}</div><div class="tp" data-c="${id}" data-t="1">${s.trt}</div><div class="tp" data-c="${id}" data-t="2"><ul class="apa">${s.src.map(k=>'<li>'+apa(k)+'</li>').join('')}</ul></div>
  <p class="note">Placed by address or description, approximate.</p>`;}
 document.addEventListener('click',e=>{const b=e.target.closest('.tabs button');if(!b)return;const c=b.parentNode.dataset.c,t=b.dataset.t;
  b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
@@ -130,7 +131,7 @@ river.bindPopup(card({n:'Lower Tijuana River: the Recovery Team focus reach',url
  kv:[['6 mi','Lower river reach'],['33','Charter member organizations']],
  ov:'Sediment and trash degraded the lower six miles of the river and the estuary. The river remains listed for 20 pollutants, and the Board says cross-border waste flows continue largely undiminished.',
  trt:'The Recovery Team works this reach. Its Recovery Strategy produced 27 projects in seven Priority Action Areas, and the Five-Year Action Plan set 10 projects across two tiers.',
- src:['res2012','page','strat','plan','charter']}),{maxWidth:320});
+ src:['res2012','page','tmdl','strat','plan','charter']}),{maxWidth:320});
 const border=L.polyline(BORDER,{color:'#ffffff',weight:3,dashArray:'8 6',opacity:.9}).addTo(LG.focus);
 border.bindPopup(card({n:'U.S.-Mexico border',url:SRC.epa[1],lat:32.54,lng:-117.06,a:'International boundary between San Diego and Tijuana.',
  kv:[['2/3','Watershed in Mexico'],['0','Mexican agencies on the charter']],
@@ -158,7 +159,7 @@ map.fitBounds(Z.valley);
 
 /* about: timeline and sources */
 document.getElementById('tl').innerHTML=TIMELINE.map(t=>`<tr><td>${t[0]}</td><td>${t[1]} (${srcLink(t[2])})</td></tr>`).join('');
-document.getElementById('bib').innerHTML=Object.keys(SRC).map(k=>'<li>'+srcLink(k)+'</li>').join('');
+document.getElementById('bib').innerHTML=Object.keys(SRC).sort((a,b)=>SRC[a][2].localeCompare(SRC[b][2])).map(k=>'<li>'+apa(k)+'</li>').join('');
 </script>
 </body>
 </html>

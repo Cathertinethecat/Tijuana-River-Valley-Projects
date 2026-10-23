@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRVRT Map Sources</title>
+<script src="data.js?v=2"></script>
+<style>
+  body{font-family:"Times New Roman",Times,serif;color:#000;background:#fff;max-width:760px;margin:0 auto;padding:32px 16px 48px;font-size:12pt;line-height:2}
+  h1{font-size:12pt;font-weight:700;text-align:center;margin:0}
+  .sub{text-align:center;margin:0 0 24px}
+  h2{font-size:12pt;font-style:italic;font-weight:400;margin:24px 0 0}
+  p.ref{margin:0;padding-left:.5in;text-indent:-.5in}
+  a{color:#0563c1;word-break:break-all}
+  table{border-collapse:collapse;width:100%;font-size:11pt;line-height:1.35;margin-top:8px}
+  th,td{border:1px solid #bfbfbf;padding:4px 6px;text-align:left;vertical-align:top}
+  th{font-weight:700;font-style:italic}
+  td:first-child{font-weight:700}
+  .note{font-size:10pt;line-height:1.4;margin-top:24px}
+</style>
+</head>
+<body>
+<h1>References</h1>
+<p class="sub">Tijuana River Valley Recovery Team Map: Sources Cited</p>
+<div id="refs"></div>
+<h2>Where each source is used on the map</h2>
+<table id="use"><tr><th>Map feature</th><th>Sources</th></tr></table>
+<p class="note">All sources are official government publications or pages (California Water Boards, U.S. EPA, the International Boundary and Water Commission, California State Coastal Conservancy, CalRecycle via CEQAnet, and the City of San Diego). Dates are taken from each document or page's own publication or last-updated date. Marker positions and the river and border lines are approximate and are not drawn from these sources.</p>
+<script>
+const keys=Object.keys(SRC).sort((a,b)=>SRC[a][2].replace(/<[^>]+>/g,'').localeCompare(SRC[b][2].replace(/<[^>]+>/g,'')));
+document.getElementById('refs').innerHTML=keys.map(k=>`<p class="ref">${SRC[k][2]} <a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][1]}</a></p>`).join('');
+const rows=[...SITES.map(s=>[s.n,s.src]),['Lower Tijuana River focus reach',['res2012','page','tmdl','strat','plan','charter']],['U.S.-Mexico border',['epa','charter','m328','m333']],['Recovery Team timeline',[...new Set(TIMELINE.map(t=>t[2]))]]];
+document.getElementById('use').innerHTML+=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].map(k=>SRC[k][0]).join('; ')}</td></tr>`).join('');
+</script>
+</body>
+</html>
