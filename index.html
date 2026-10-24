@@ -9,8 +9,8 @@
 <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.1/dist/Leaflet.GoogleMutant.js"></script>
 <script>window.gmReady=function(){window._gmLoaded=true;if(window.onGoogleReady)window.onGoogleReady();};</script>
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv-3fjCEu5UzXlyiA2OGjzyUl3tprLpxY&loading=async&callback=gmReady&v=weekly"></script>
-<script src="data.js?v=4"></script>
-<script src="projects.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="projects.js?v=5"></script>
 <style>
   html,body{height:100%;margin:0;font-family:"Times New Roman",Times,serif;color:#1d1c19;background:#111}
   #map{position:absolute;inset:0}
@@ -109,7 +109,8 @@ document.getElementById('sat').onchange=setBase;
 function revertBase(){if(!useGoogle)return;useGoogle=false;setBase();}
 window.gm_authFailure=revertBase;
 window.onGoogleReady=function(){try{if(!L.gridLayer.googleMutant||!window.google||!google.maps)return;
- gSat=L.gridLayer.googleMutant({type:'hybrid',maxZoom:20});gRoad=L.gridLayer.googleMutant({type:'roadmap',maxZoom:20});
+ const GSTY=[{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];/* hide Google's business, park, and transit pins */
+ gSat=L.gridLayer.googleMutant({type:'hybrid',maxZoom:20,styles:GSTY});gRoad=L.gridLayer.googleMutant({type:'roadmap',maxZoom:20,styles:GSTY});
  let ok=false;[gSat,gRoad].forEach(l=>l.on('spawned',e=>{try{google.maps.event.addListenerOnce(e.mapObject,'tilesloaded',()=>{ok=true;});}catch(_){}}));
  useGoogle=true;setBase();setTimeout(()=>{if(!ok)revertBase();},8000);}catch(e){revertBase();}};
 if(window._gmLoaded)window.onGoogleReady();
