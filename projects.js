@@ -37,7 +37,7 @@ const PROJECTS = [
    d:"Assesses, designs, and possibly builds storm drain capture devices, such as separators and inlet filters, at key locations."},
   {doc:"strat",num:12,ar:"D",n:"Trash capture implementation, Mexico",lead:"Not stated",pg:"21, 25",lat:null,lng:null,where:"Mexico",
    d:"Installs storm drain capture devices, improves street sweeping, and adds nets or screens in channels."},
-  {doc:"strat",num:13,ar:"E",n:"Local integrated sediment and trash processing site",lead:"Recovery Team O&M members",pg:"21, 26",lat:32.5396,lng:-117.1102,where:"Goat Canyon basins area (site not fixed)",
+  {doc:"strat",num:13,ar:"E",n:"Local integrated sediment and trash processing site",lead:"Recovery Team O&M members",pg:"21, 26",lat:32.5378,lng:-117.1030,where:"Goat Canyon basins area (site not fixed)",
    d:"Creates a shared site to process sediment from the Goat Canyon basins and other valley excavations."},
   {doc:"strat",num:14,ar:"E",n:"Nearshore sediment reuse and beach replenishment",lead:"City of Imperial Beach; U.S. Army Corps of Engineers permit",pg:"21, 26",lat:32.5430,lng:-117.1252,where:"Beach beside Border Field State Park and the Reserve",
    d:"Places captured sediment on the beach under an existing Army Corps permit, and possibly nearshore under an Imperial Beach plan. In progress in 2012."},
