@@ -41,7 +41,7 @@ const PROJECTS = [
    d:"Creates a shared site to process sediment from the Goat Canyon basins and other valley excavations."},
   {doc:"strat",num:14,ar:"E",n:"Nearshore sediment reuse and beach replenishment",lead:"City of Imperial Beach; U.S. Army Corps of Engineers permit",pg:"21, 26",lat:32.5430,lng:-117.1252,where:"Beach beside Border Field State Park and the Reserve",
    d:"Places captured sediment on the beach under an existing Army Corps permit, and possibly nearshore under an Imperial Beach plan. In progress in 2012."},
-  {doc:"strat",num:15,ar:"E",n:"Nelson Sloan Quarry reclamation",lead:"Not stated",pg:"21, 26",lat:32.5405,lng:-117.0995,where:"Nelson Sloan property (Border Highlands Borrow Pit)",
+  {doc:"strat",num:15,ar:"E",n:"Nelson Sloan Quarry reclamation",lead:"Not stated",pg:"21, 26",lat:32.5412,lng:-117.1012,where:"Nelson Sloan property (Border Highlands Borrow Pit)",
    d:"Reclaims the borrow pit with valley sediment and revegetates eroded slopes. In feasibility phase in 2012."},
   {doc:"strat",num:16,ar:"E",n:"Reuse of construction-grade material: contract terms",lead:"Not stated",pg:"21, 26",lat:null,lng:null,where:"Valley operations",
    d:"Develops standard contract terms so material operators distribute sediment-derived construction material responsibly."},
